@@ -249,7 +249,7 @@
             <div id="ace-editor"></div>
             <button id="pg-run">Run</button>
           </div>
-          <a class="btn" onclick="location.hash = ''">Back</a>
+          <a class="btn" onclick="location.href = location.href.slice(0,-6)">Back</a>
         </div>
       `);
       setTimeout(function() {
@@ -272,7 +272,7 @@
     
     // --- Router ---  
     Flaro.router({
-      "#": () => {},
+      "/": () => {},
       "/play": PlaygroundPage
     });
   </script>
