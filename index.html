@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flaro — Lightweight UI Microframework</title>
+  <!-- Ace Editor: always loaded -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/ace.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/ext-language_tools.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/theme-chrome.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/theme-one_dark.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/mode-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/mode-json.min.js"></script>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --bg: #f3f4f6;
+      --text: #1e293b;
+      --card: #fff;
+      --border: #e5e7eb;
+      --radius: 12px;
+      --transition: 0.3s;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9fafb;
+      color: #222;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 960px;
+      margin: auto;
+      padding: 1em;
+    }
+    
+    h1,
+    h2,
+    h3 {
+      margin-top: 0;
+    }
+    
+    .hero {
+      padding: 4rem 1rem;
+      text-align: center;
+    }
+    
+    .hero h1 {
+      font-size: 2.5rem;
+    }
+    
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
+    
+    #live {
+      margin-top: 20px;
+    }
+    
+    .main-content {
+      padding: 24px 12px 64px 12px;
+      margin-top: 0;
+      margin-bottom: 0;
+      min-height: 65vh;
+    }
+    
+    .title {
+      font-size: 2.3em;
+      font-weight: 900;
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      word-break: break-word;
+    }
+    
+    .subtitle {
+      color: var(--primary);
+      font-size: 1.25em;
+      margin-bottom: 22px;
+      font-weight: 400;
+      line-height: 1.2;
+    }
+    
+    .playground {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 10px 20px 10px;
+      margin: 10px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+    }
+    
+    #ace-editor,
+    .snippet-ace {
+      width: 100%;
+      min-height: 140px;
+      height: 140px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      font-size: 1em;
+      min-width: 0;
+      background: var(--bg);
+      margin-bottom: 0;
+      resize: vertical;
+      box-sizing: border-box;
+      overflow-x: auto;
+      color: var(--text);
+    }
+    
+    .snippet-ace {
+      margin-bottom: 0.5em;
+      height: 100px;
+      min-height: 22px;
+      cursor: default;
+      pointer-events: none;
+      padding: 5px;
+      overflow-x: scroll;
+    }
+    
+    .playground button {
+      align-self: flex-end;
+      background: var(--primary);
+      border: none;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background var(--transition);
+      margin-top: 8px;
+    }
+    
+    .playground button:hover {
+      background: var(--primary-dark);
+    }
+    
+    .playground .output {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+      min-height: 20px;
+      max-height: 100px;
+      font-family: monospace;
+      color: var(--primary);
+      white-space: pre-wrap;
+      margin-top: 6px;
+      overflow-x: auto;
+      font-size: 1em;
+      max-width: 100%;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+  <main id="app" class="container"></main>
+  <footer id="footer"></footer>
+  <script src="Flaro.js"></script>
+  <script>
+    // Flaro app starts  
+    const $app = Flaro("#app");
+    
+    // --- Hero Section ---  
+    Flaro("@New(section.hero)In(#app)").comp((self) => `  
+      <h1>⚡ Flaro.js</h1>  
+      <p>A lightweight JavaScript UI microframework for building fast apps with minimal code.</p>  
+      <a href="#/play" class="btn">Try Flaro</a>  
+    `);
+    
+    // --- Feature Cards ---  
+    const features = [
+      { title: "SPA Routing", desc: "Built-in client-side router with support for nested routes and status pages." },
+      { title: "Emmet DOM", desc: "Create elements with Emmet-like syntax using @New(div#id.class[attr])In(#contai)." },
+      { title: "Reactive Components", desc: ".comp(fn) auto-renders and re-renders on data change." },
+      { title: "Store API", desc: "Set, get, move, proxy, and observe global state with a clean API." },
+      { title: "Fetch Utility", desc: "Simplified wrapper around fetch() with JSON, text, blob handling." },
+      { title: "Reload & Reboot", desc: "Scoped or full refresh/re-render with a single function call." },
+    ];
+    
+    Flaro("@New(section#features)In(#app)").comp(() => {
+      return `  
+        <h2>🛠 Features</h2>  
+        <div class="grid">  
+          ${features.map(f => `  
+            <div class="card">  
+              <h3>${f.title}</h3>  
+              <p>${f.desc}</p>  
+            </div>  
+          `).join('')}  
+        </div>  
+      `;
+    });
+    
+    // --- Footer ---  
+    Flaro("#footer").html(`  
+      Built with ❤️ using <strong>Flaro.js</strong> — MIT Licensed  
+    `);
+    
+    // --- Playground Page ---  
+    function PlaygroundPage() {
+      Flaro("#app").html(`
+        <div class="main-content">
+          <div class="title">Flaro Playground</div>
+          <div class="subtitle">Live code — try Flaro right here!</div>
+          <div class="playground">
+            <div id="ace-editor"></div>
+            <button id="pg-run">Run</button>
+          </div>
+          <a class="btn" href="/${""/*location.href.split('#/play')[0]*/}">Back</a>
+        </div>
+      `);
+      setTimeout(function() {
+        var editor = ace.edit("ace-editor");
+        editor.session.setMode("ace/mode/javascript");
+        editor.setOptions({ enableBasicAutocompletion: true, enableLiveAutocompletion: true, fontSize: "1em", showPrintMargin: false, readOnly: false });
+        editor.setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "ace/theme/one_dark" : "ace/theme/chrome");
+        editor.setValue("// Write Flaro code here!\nFlaro('@New(button.btn)In(#out)').comp((self,state) => {\n  if(!state.count) state.count = 0;\n  self.off('click').on('click',() => state.count++);\n  return `Count: {{count}}`;\n});\nFlaro('.btn').css({fontSize: '16px',padding: '.5em 1em'});", -1);
+        Flaro('#pg-run').on('click', function() {
+          if(!document.querySelector('#out')) Flaro('@New(iframe#out.output)In(.playground)')
+          let code = editor.getValue();
+          let outEl = Flaro('#out').el()[0];
+          try { outEl.srcdoc = `<script src="Flaro.js"><\/script><div id="out">  </div><script>${code}<\/script>` }
+          catch (e) {
+            outEl.srcdoc = `<div id="error-ace" class="snippet-ace">${e.toString()}</div>').css({ color: "red" })`;
+          }
+        });
+        // Theme sync for Ace
+        const observer = new MutationObserver(function() {
+          editor.setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "ace/theme/one_dark" : "ace/theme/chrome");
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+      }, 20);
+    }
+    
+    // --- Router ---  
+    Flaro.router({
+      "/play": PlaygroundPage
+    });
+  </script>
+</body>
+
+</html>
