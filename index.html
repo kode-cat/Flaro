@@ -262,16 +262,11 @@
           if(!document.querySelector('#out')) Flaro('@New(iframe#out.output)In(.playground)')
           let code = editor.getValue();
           let outEl = Flaro('#out').el()[0];
-          try { outEl.srcdoc = `<script src="Flaro.js"><\/script><div id="out">  </div><script>${code}<\/script>` }
+          try { outEl.srcdoc = `<script src="Flaro.js"><\/script><div id="out"></div><script>${code}<\/script>` }
           catch (e) {
             outEl.srcdoc = `<div id="error-ace" class="snippet-ace">${e.toString()}</div>').css({ color: "red" })`;
           }
         });
-        // Theme sync for Ace
-        const observer = new MutationObserver(function() {
-          editor.setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "ace/theme/one_dark" : "ace/theme/chrome");
-        });
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
       }, 20);
     }
     
